@@ -13,8 +13,8 @@ public class UserService {
     }
 
     private boolean validateUserData(String email, String name, String cpf, String password) {
-        email = email.replaceAll(",", "");
-        name = name.replaceAll(",", "");
+        email = email.replaceAll(",", "").toLowerCase();
+        name = name.replaceAll(",", "").toUpperCase();
         cpf = cpf.replaceAll(",", "");
 
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -41,10 +41,10 @@ public class UserService {
             System.err.println("Invalid first name format, pleas provide the full name");
         }
         if (!cpfIsOk) {
-            System.err.println("Invalid CPF format");
+            System.err.println("Invalid CPF format. Be sure to enter it as xxx.xxx.xxx-xx");
         }
         if (!userIsUnique) {
-            System.err.println("User not unique");
+            System.err.println("User already exists");
 
         }
         if (!passwordIsOk) {
