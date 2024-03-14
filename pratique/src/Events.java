@@ -9,23 +9,22 @@ public class Events {
     private String description;
     private Float ticketPrice;
     private Boolean ticketsForSale;
-    private Integer maxUsers;
-    private List<String> users;
+    private Integer maxAtendants;
+    private List<String> atendants;
 
     Events(LocalDateTime date, String address, String eventType, String description, Float ticketPrice,
-            Boolean ticketsForSale, Integer maxUsers) {
+            Boolean ticketsForSale, Integer maxAtendants) {
         this.date = date;
         this.address = address;
         this.eventType = eventType;
         this.description = description;
         this.ticketPrice = ticketPrice;
         this.ticketsForSale = ticketsForSale;
-        this.maxUsers = maxUsers;
+        this.maxAtendants = maxAtendants;
 
-        this.users = new ArrayList<>();
+        this.atendants = new ArrayList<>();
     }
 
-    // geters
     public LocalDateTime getDate() {
         return this.date;
     }
@@ -50,19 +49,18 @@ public class Events {
         return this.ticketsForSale;
     }
 
-    public Integer getMaxUsers() {
-        return this.maxUsers;
+    public Integer getmaxAtendants() {
+        return this.maxAtendants;
     }
 
-    public List<String> getUsers() {
-        return this.users;
+    public List<String> getAtendats() {
+        return new ArrayList<>(this.atendants);
     }
 
-    public Boolean checkUsersIsParticipant(String user) {
-        return this.users.contains(user);
+    public Boolean isUsersAtendant(String atendant) {
+        return this.atendants.contains(atendant);
     }
 
-    // Setters
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
@@ -87,15 +85,15 @@ public class Events {
         this.ticketsForSale = ticketsForSale;
     }
 
-    public void setMaxUsers(Integer maxUsers) {
-        this.maxUsers = maxUsers;
+    public void setmaxAtendants(Integer maxAtendants) {
+        this.maxAtendants = maxAtendants;
     }
 
-    public void addUserToEvent(String user) {
-        this.users.add(user);
+    public void addUserToEventAtendats(String user) {
+        this.atendants.add(user);
     }
 
-    public void removeUserFromEvent(String user) {
-        this.users.remove(user);
+    public void removeUserFromEventAtendants(String user) {
+        this.atendants.remove(user);
     }
 }

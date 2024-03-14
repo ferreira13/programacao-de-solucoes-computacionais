@@ -31,7 +31,7 @@ public class User {
         return this.password;
     }
 
-    public String getbirthday() {
+    public String getBirthday() {
         return this.birthday;
     }
 
@@ -52,7 +52,7 @@ public class User {
         this.password = password;
     }
 
-    public void setSbirthday(String birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 }
