@@ -1,17 +1,23 @@
+import java.time.LocalDate;
+
 public class User {
     private String email;
     private String name;
     private String cpf;
-    private String birthday;
+    private LocalDate birthday;
     private String password;
 
 
-    public User(String email, String name, String cpf, String password, String birthday) {
+    public User(String email, String name, String cpf, String password, LocalDate birthday) {
         this.email = email;
         this.name = name;
         this.cpf = cpf;
         this.password = password;
         this.birthday = birthday;
+    }
+
+    public User() {
+
     }
 
     // getters
@@ -31,7 +37,7 @@ public class User {
         return this.password;
     }
 
-    public String getBirthday() {
+    public LocalDate getBirthday() {
         return this.birthday;
     }
 
@@ -52,7 +58,7 @@ public class User {
         this.password = password;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 }
