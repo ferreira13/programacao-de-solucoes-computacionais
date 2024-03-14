@@ -1,56 +1,92 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Persistence {
 
+    public static List<User> readUsersFromFile(String filePath) {
+        List<User> userList = new ArrayList<>();
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(filePath));
+            for (String line : lines) {
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    String email = parts[0];
+                    String name = parts[1];
+                    String cpf = parts[2];
+                    LocalDate birthday = LocalDate.parse(parts[3]);
+                    String password = parts[4];
+                    User user = new User(email, name, cpf, password, birthday);
+                    userList.add(user);
+                }
+            }
+            System.out.println("Users data read from " + filePath);
+        } catch (IOException e) {
+            System.err.println("Failed to read users data from file: " + e.getMessage());
+        }
+        return userList;
+    }
+
     public static void writeUserToFile(String filePath, User user) {
         StringBuilder sb = new StringBuilder();
-        sb.append("User Info:\n")
-                .append("Email: ").append(user.getEmail()).append("\n")
-                .append("Name: ").append(user.getName()).append("\n")
-                .append("CPF: ").append(user.getCpf()).append("\n")
-                .append("Birthday: ").append(user.getBirthday()).append("\n\n");
+        sb.append(user.getEmail()).append(",")
+                .append(user.getName()).append(",")
+                .append(user.getCpf()).append(",")
+                .append(user.getBirthday()).append(",")
+                .append(user.getPassword()).append("\n");
 
         try {
-            Files.write(Paths.get(filePath), sb.toString().getBytes());
+            Files.write(Paths.get(filePath), sb.toString().getBytes(), StandardOpenOption.APPEND);
             System.out.println("User data written to " + filePath);
         } catch (IOException e) {
             System.err.println("Failed to write user data to file: " + e.getMessage());
         }
     }
 
-    public static List<User> readUsersFromFile(String filePath) {
-        List<User> users = new ArrayList<>();
+    public static void removeUserFromFile(String filePath, String userEmail) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
-            User user = null;
-            for (String line : lines) {
-                if (line.startsWith("Email: ")) {
-                    if (user != null) {
-                        users.add(user);
-                    }
-                    user = new User();
-                    user.setEmail(line.substring(7));
-                } else if (line.startsWith("Name: ")) {
-                    user.setName(line.substring(6));
-                } else if (line.startsWith("CPF: ")) {
-                    user.setCpf(line.substring(5));
-                } else if (line.startsWith("Birthday: ")) {
-                    user.setBirthday(LocalDate.parse(line.substring(10)));
-                }
-            }
-            if (user != null) {
-                users.add(user);
-            }
+            List<String> filteredLines = lines.stream()
+                    .filter(line -> !line.contains("Email: " + userEmail))
+                    .collect(Collectors.toList());
+            Files.write(Paths.get(filePath), filteredLines);
+            System.out.println("User removed from file");
         } catch (IOException e) {
-            System.err.println("Failed to read user data from file: " + e.getMessage());
+            System.err.println("Failed to remove user from file: " + e.getMessage());
         }
-        return users;
+    }
+
+    public static void updateUserInFile(String filePath, User updatedUser) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(filePath));
+            List<String> updatedLines = lines.stream()
+                    .map(line -> {
+                        if (line.startsWith("Email: " + updatedUser.getEmail())) {
+                            return "Email: " + updatedUser.getEmail() + "\n" +
+                                    "Name: " + updatedUser.getName() + "\n" +
+                                    "CPF: " + updatedUser.getCpf() + "\n" +
+                                    "Birthday: " + updatedUser.getBirthday() + "\n";
+                        }
+                        return line;
+                    })
+                    .collect(Collectors.toList());
+            Files.write(Paths.get(filePath), updatedLines);
+            System.out.println("User updated in file");
+        } catch (IOException e) {
+            System.err.println("Failed to update user in file: " + e.getMessage());
+        }
+    }
+
+    public void updateUser(String path, User user) {
+        removeUserFromFile(path, user.getEmail());
+
+        writeUserToFile(path, user);
     }
 
     public static void writeEventsToFile(String filePath, List<Events> eventsList) {
