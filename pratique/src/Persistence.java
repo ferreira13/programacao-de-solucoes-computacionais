@@ -131,21 +131,29 @@ public class Persistence {
                     eventsList.add(event);
                 }
                 event = new Events();
-            } else if (line.startsWith("Date: ")) {
+            }
+            if (line.startsWith("Date: ")) {
                 event.setDate(LocalDateTime.parse(line.substring(6)));
-            } else if (line.startsWith("Address: ")) {
+            }
+            if (line.startsWith("Address: ")) {
                 event.setAddress(line.substring(9));
-            } else if (line.startsWith("Event Type: ")) {
+            }
+            if (line.startsWith("Event Type: ")) {
                 event.setEventType(line.substring(12));
-            } else if (line.startsWith("Description: ")) {
+            }
+            if (line.startsWith("Description: ")) {
                 event.setDescription(line.substring(13));
-            } else if (line.startsWith("Ticket Price: ")) {
+            }
+            if (line.startsWith("Ticket Price: ")) {
                 event.setTicketPrice(Float.parseFloat(line.substring(14)));
-            } else if (line.startsWith("Tickets For Sale: ")) {
+            }
+            if (line.startsWith("Tickets For Sale: ")) {
                 event.setTicketsForSale(Boolean.parseBoolean(line.substring(18)));
-            } else if (line.startsWith("Max Attendees: ")) {
+            }
+            if (line.startsWith("Max Attendees: ")) {
                 event.setmaxAtendees(Integer.parseInt(line.substring(15)));
-            } else if (line.startsWith("Attendees: ")) {
+            }
+            if (line.startsWith("Attendees: ")) {
                 String[] attendees = line.substring(11).split(", ");
                 for (String attendee : attendees) {
                     event.addUserToEventAtendats(attendee);
