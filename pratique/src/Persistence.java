@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Persistence {
-    private final static Integer ATRIBUTES_PER_LINE = 6;
+    private final static Integer ATRIBUTES_PER_LINE = 5;
 
     public static List<User> readUsersFromFile(String filePath) {
         List<User> userList = new ArrayList<>();
@@ -17,7 +17,7 @@ public class Persistence {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
             for (String line : lines) {
                 String[] parts = line.split(",");
-                if (parts.length == ATRIBUTES_PER_LINE - 1) {
+                if (parts.length == ATRIBUTES_PER_LINE) {
                     String email = parts[0];
                     String name = parts[1];
                     String cpf = parts[2];
