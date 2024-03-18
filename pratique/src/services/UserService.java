@@ -6,33 +6,23 @@ import java.util.regex.Pattern;
 
 public class UserService {
     private List<User> userList;
-    private String userFilePath = System.getProperty("user.dir") + "/data/users.txt";
+    private String userFilePath = System.getProperty("user.dir") + "/pratique/data/users.txt";
 
     public UserService() {
         this.userList = Persistence.readUsersFromFile(userFilePath);
     }
 
-    private boolean validateUserData(String email, String name, String cpf, String password) {
+    private boolean userDataIsValid(String email, String name, String cpf, String password) {
         email = email.replaceAll(",", "").toLowerCase();
         name = name.replaceAll(",", "").toUpperCase();
-        cpf = cpf.replaceAll(",", "");
+        cpf = cpf.replaceAll("\\.", "").replaceAll("-", "");
 
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        String nameRegex = "^[a-zA-Z]+(?:\\s+[a-zA-Z]+)+$";
-        String cpfRegex = "^(?:(?!000\\.?000\\.?000-?00).)*$|^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$";
 
-        Pattern emailPattern = Pattern.compile(emailRegex);
-        Matcher emailMatcher = emailPattern.matcher(email);
-        Pattern namePattern = Pattern.compile(nameRegex);
-        Matcher nameMatcher = namePattern.matcher(name);
-        Pattern cpfPattern = Pattern.compile(cpfRegex);
-        Matcher cpfMatcher = cpfPattern.matcher(cpf);
-
-        boolean emailIsOk = emailMatcher.matches();
-        boolean nameIsOk = nameMatcher.matches();
-        boolean cpfIsOk = cpfMatcher.matches();
-        boolean userIsUnique = userExists(email, cpf);
-        boolean passwordIsOk = !password.contains(",");
+        boolean emailIsOk = emailIsOk(email);
+        boolean nameIsOk = nameIsOk(name);
+        boolean cpfIsOk = cpfIsOk(cpf);
+        boolean userExists = userExists(email, cpf);
+        boolean passwordIsOk = passwordIsOk(password);
 
         if (!emailIsOk) {
             System.err.println("Invalid email format");
@@ -43,7 +33,7 @@ public class UserService {
         if (!cpfIsOk) {
             System.err.println("Invalid CPF format. Be sure to enter it as xxx.xxx.xxx-xx");
         }
-        if (!userIsUnique) {
+        if (userExists) {
             System.err.println("User already exists");
 
         }
@@ -51,10 +41,38 @@ public class UserService {
             System.err.println("Password contain invalid character");
         }
 
-        return emailIsOk && nameIsOk && cpfIsOk && userIsUnique && passwordIsOk;
+        return emailIsOk && nameIsOk && cpfIsOk && !userExists && passwordIsOk;
+    }
+
+    public Boolean emailIsOk(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern emailPattern = Pattern.compile(emailRegex);
+        Matcher emailMatcher = emailPattern.matcher(email);
+        return emailMatcher.matches();
+    }
+
+    public Boolean nameIsOk(String name) {
+        String nameRegex = "^[a-zA-Z]+(?:\\s+[a-zA-Z]+)+$";
+        Pattern namePattern = Pattern.compile(nameRegex);
+        Matcher nameMatcher = namePattern.matcher(name);
+        return nameMatcher.matches();
+    }
+
+    public Boolean cpfIsOk(String cpf) {
+        String cpfRegex = "^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}|\\d{11})$";
+        Pattern cpfPattern = Pattern.compile(cpfRegex);
+        Matcher cpfMatcher = cpfPattern.matcher(cpf);
+        return cpfMatcher.matches();
+    }
+
+    public Boolean passwordIsOk(String password) {
+        return !password.contains(",");
     }
 
     public boolean userExists(String email, String cpf) {
+        if (userList.isEmpty()) {
+            return false;
+        }
         return userList.stream().anyMatch(user -> user.getEmail().equals(email) || user.getCpf().equals(cpf));
     }
 
@@ -63,7 +81,8 @@ public class UserService {
     }
 
     public void createUser(String email, String name, String cpf, String password, LocalDate birthday) {
-        if (!validateUserData(email, name, cpf, password)) {
+        cpf = cpf.replaceAll("\\.", "").replaceAll("-", "");
+        if (!userDataIsValid(email, name, cpf, password)) {
             System.err.println("Failed to create user, please check the provided data");
         } else {
             User user = new User(email, name, cpf, password, birthday);
@@ -73,7 +92,7 @@ public class UserService {
     }
 
     public void updateUser(String email, String name, String cpf, String password, LocalDate birthday) {
-        if (!validateUserData(email, name, cpf, password)) {
+        if (!userDataIsValid(email, name, cpf, password)) {
             System.err.println("Failed to update user, please check the provided data");
         } else {
             removeUser(email);
@@ -86,4 +105,5 @@ public class UserService {
         Persistence.removeUserFromFile(userFilePath, email);
         userList.removeIf(user -> user.getEmail().equals(email));
     }
+
 }

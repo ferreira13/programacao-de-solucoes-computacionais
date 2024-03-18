@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 public class Persistence {
     private final static Integer ATRIBUTES_PER_LINE = 5;
@@ -30,9 +31,17 @@ public class Persistence {
             System.out.println("Users data read from " + filePath);
         } catch (IOException e) {
             System.err.println("Failed to read users data from file: " + e.getMessage());
-        }
-        return userList;
+        e.printStackTrace();
+    } catch (DateTimeParseException e) {
+        System.err.println("Failed to parse date from file: " + e.getMessage());
+        e.printStackTrace();
+    } catch (ArrayIndexOutOfBoundsException e) {
+        System.err.println("Invalid data format in file: " + e.getMessage());
+        e.printStackTrace();
     }
+    return userList;
+}
+
 
     public static void writeUserToFile(String filePath, User user) {
         StringBuilder sb = new StringBuilder();

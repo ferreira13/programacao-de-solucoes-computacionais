@@ -4,20 +4,16 @@ public class Console {
     private static String green = "\u001B[32m";
     private static String yellow = "\u001B[33m";
 
-    public static String reset() {
-        return reset;
+    public static void red(String line) {
+        System.out.println(red + line + reset);
     }
 
-    public static String red() {
-        return red;
+    public static void green(String line) {
+        System.out.println(green + line + reset);
     }
 
-    public static String green() {
-        return green;
-    }
-
-    public static String yellow() {
-        return yellow;
+    public static void yellow(String line) {
+        System.out.println(yellow + line + reset);
     }
 
     public static void printLogo() {
