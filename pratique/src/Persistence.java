@@ -63,10 +63,10 @@ public class Persistence {
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
             List<String> filteredLines = lines.stream()
-                    .filter(line -> !line.contains("Email: " + userEmail))
+                    .filter(line -> !line.contains(userEmail))
                     .collect(Collectors.toList());
             Files.write(Paths.get(filePath), filteredLines);
-            System.out.println("User removed from file");
+            System.out.println("User removed from file " + filePath);
         } catch (IOException e) {
             System.err.println("Failed to remove user from file: " + e.getMessage());
         }
