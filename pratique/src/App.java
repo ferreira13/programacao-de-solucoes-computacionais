@@ -36,80 +36,7 @@ public class App {
 
                     switch (choice) {
                         case 1:
-                            Console.green("\nCreate New User");
-                            Console.println("Please provide the user data: ");
-                            Console.println("User's email: ");
-
-                            waitForResponse = true;
-                            while (waitForResponse) {
-
-                                scanner = new Scanner(System.in);
-                                email = Console.getNextLine(scanner);
-                                if (userService.isValidEmail(email)) {
-                                    waitForResponse = false;
-                                } else {
-                                    Console.red("Please enter a valid email");
-                                }
-                            }
-
-                            Console.println("User's full name: ");
-                            waitForResponse = true;
-                            while (waitForResponse) {
-
-                                scanner = new Scanner(System.in);
-                                name = Console.getNextLine(scanner);
-                                if (userService.isValidName(name)) {
-                                    waitForResponse = false;
-                                } else {
-                                    Console.red(" Please enter a valid FULL name");
-                                }
-                            }
-
-                            Console.println("User's cpf: ");
-                            waitForResponse = true;
-                            while (waitForResponse) {
-
-                                scanner = new Scanner(System.in);
-                                cpf = Console.getNextLine(scanner);
-                                if (userService.isValidCpf(cpf)) {
-                                    waitForResponse = false;
-                                } else {
-                                    Console.red("Please enter a valid cpf xxx.xxx.xxx-xx");
-                                }
-                            }
-
-                            Console.println("User's password: ");
-                            waitForResponse = true;
-                            while (waitForResponse) {
-
-                                scanner = new Scanner(System.in);
-                                password = Console.getNextLine(scanner);
-                                if (userService.isValidPassword(password)) {
-                                    waitForResponse = false;
-                                } else {
-                                    Console.red("password may not contain ,");
-                                }
-                            }
-
-                            Console.println("User's birthday: ");
-                            waitForResponse = true;
-                            while (waitForResponse) {
-                                scanner = new Scanner(System.in);
-                                try {
-                                    birthday = DateUtils.parseDate(Console.getNextLine(scanner));
-                                    waitForResponse = false;
-
-                                } catch (Exception e) {
-                                    Console.red("Please enter a valid date.");
-                                }
-
-                            }
-
-                            userService.createUser(email, name, cpf, password, birthday);
-                            Console.green("User added to database");
-
-                            break;
-
+                            userService = handleCreateUser(scanner, userService);
                         case 2:
                             Console.green("\nEdit existing user");
                             Console.println("Please provide the user email or typ q to quit: ");
@@ -270,5 +197,88 @@ public class App {
         scanner.close();
     }
 
+    private static UserService handleCreateUser(Scanner scanner, UserService userService) {
+        Boolean waitForResponse = false;
+        String email = "";
+        String name = "";
+        String cpf = "";
+        String password = "";
+        LocalDate birthday = null;
+
+        Console.green("\nCreate New User");
+        Console.println("Please provide the user data: ");
+        Console.println("User's email: ");
+
+        waitForResponse = true;
+        while (waitForResponse) {
+
+            scanner = new Scanner(System.in);
+            email = Console.getNextLine(scanner);
+            if (userService.isValidEmail(email)) {
+                waitForResponse = false;
+            } else {
+                Console.red("Please enter a valid email");
+            }
+        }
+
+        Console.println("User's full name: ");
+        waitForResponse = true;
+        while (waitForResponse) {
+
+            scanner = new Scanner(System.in);
+            name = Console.getNextLine(scanner);
+            if (userService.isValidName(name)) {
+                waitForResponse = false;
+            } else {
+                Console.red(" Please enter a valid FULL name");
+            }
+        }
+
+        Console.println("User's cpf: ");
+        waitForResponse = true;
+        while (waitForResponse) {
+
+            scanner = new Scanner(System.in);
+            cpf = Console.getNextLine(scanner);
+            if (userService.isValidCpf(cpf)) {
+                waitForResponse = false;
+            } else {
+                Console.red("Please enter a valid cpf xxx.xxx.xxx-xx");
+            }
+        }
+
+        Console.println("User's password: ");
+        waitForResponse = true;
+        while (waitForResponse) {
+
+            scanner = new Scanner(System.in);
+            password = Console.getNextLine(scanner);
+            if (userService.isValidPassword(password)) {
+                waitForResponse = false;
+            } else {
+                Console.red("password may not contain ,");
+            }
+        }
+
+        Console.println("User's birthday: ");
+        waitForResponse = true;
+        while (waitForResponse) {
+            scanner = new Scanner(System.in);
+            try {
+                birthday = DateUtils.parseDate(Console.getNextLine(scanner));
+                waitForResponse = false;
+
+            } catch (Exception e) {
+                Console.red("Please enter a valid date.");
+            }
+
+        }
+
+        userService.createUser(email, name, cpf, password, birthday);
+        Console.green("User added to database");
+
+        return userService;
+
+    }
 }
 
